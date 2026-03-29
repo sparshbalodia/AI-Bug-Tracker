@@ -12,76 +12,144 @@ function App() {
     const res = await API.get("/issues");
     setIssues(res.data);
   };
+  // delete issue
+  const deleteIssue = async (id) => {
+    await API.delete(`/issues/${id}`);
+    fetchIssues();
+  };
 
   const styles = {
-  container: {
-    maxWidth: "700px",
-    margin: "40px auto",
-    fontFamily: "Montserrat, sans-serif",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-  },
-  card: {
-    background: "#fff",
-    padding: "20px",
-    marginBottom: "20px",
-    borderRadius: "10px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    marginBottom: "10px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-  },
-  textarea: {
-    width: "100%",
-    padding: "10px",
-    minHeight: "80px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-    marginBottom: "10px",
-  },
-  buttonRow: {
-    display: "flex",
-    gap: "10px",
-  },
-  primaryBtn: {
-    flex: 1,
-    padding: "10px",
-    background: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-  secondaryBtn: {
-    flex: 1,
-    padding: "10px",
-    background: "#10b981",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    cursor: "pointer",
-  },
-  pre: {
-    background: "#f4f4f4",
-    padding: "10px",
-    borderRadius: "6px",
-    overflowX: "auto",
-  },
-  issueItem: {
-    padding: "10px",
-    borderBottom: "1px solid #eee",
-  },
-  meta: {
-    fontSize: "12px",
-    color: "#666",
-  },
-};
+    page: {
+      background: "#000000",
+      minHeight: "100vh",
+      padding: "1px 0 60px",
+    },
+    container: {
+      maxWidth: "700px",
+      margin: "40px auto",
+      fontFamily: "Montserrat, sans-serif",
+      padding: "0 20px",
+    },
+    title: {
+      textAlign: "center",
+      marginBottom: "50px",
+      color: "#ffffff",
+    },
+    card: {
+      background: "#1a1f27",
+      padding: "20px",
+      marginBottom: "20px",
+      borderRadius: "10px",
+      border: "1px solid #30363d",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+    },
+    aiCard: {
+      background: "#161b22",
+      padding: "20px",
+      marginBottom: "20px",
+      borderRadius: "10px",
+      border: "1px solid #1f3a6b",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+    },
+    input: {
+      width: "100%",
+      padding: "10px",
+      marginBottom: "10px",
+      borderRadius: "6px",
+      border: "1px solid #30363d",
+      background: "#0d1117",
+      color: "#c9d1d9",
+      fontFamily: "Montserrat, sans-serif",
+      fontSize: "14px",
+      boxSizing: "border-box",
+      outline: "none",
+    },
+    textarea: {
+      width: "100%",
+      padding: "10px",
+      minHeight: "80px",
+      borderRadius: "6px",
+      border: "1px solid #30363d",
+      background: "#0d1117",
+      color: "#c9d1d9",
+      fontFamily: "Montserrat, sans-serif",
+      fontSize: "14px",
+      marginBottom: "10px",
+      boxSizing: "border-box",
+      resize: "vertical",
+      outline: "none",
+    },
+    buttonRow: {
+      display: "flex",
+      gap: "10px",
+    },
+    primaryBtn: {
+      flex: 1,
+      padding: "10px",
+      background: "#238636",
+      color: "white",
+      border: "1px solid #2ea043",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontFamily: "Montserrat, sans-serif",
+      fontWeight: "600",
+    },
+    secondaryBtn: {
+      flex: 1,
+      padding: "10px",
+      background: "#1f2d5a",
+      color: "#b6dafa",
+      border: "1px solid #234b82",
+      borderRadius: "6px",
+      cursor: "pointer",
+      fontFamily: "Montserrat, sans-serif",
+      fontWeight: "600",
+    },
+    deleteBtn: {
+      padding: "5px 10px",
+      background: "#d73a49",
+      color: "white",
+      border: "1px solid #e55361",
+      borderRadius: "6px",
+      cursor: "pointer",
+    },
+    pre: {
+      background: "#0d1117",
+      padding: "10px",
+      borderRadius: "6px",
+      overflowX: "auto",
+      color: "#79c0ff",
+      border: "1px solid #30363d",
+    },
+    issueItem: {
+      padding: "10px",
+      borderBottom: "1px solid #21262d",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+    },
+    issueTitle: {
+      color: "#f0f6fc",
+      fontWeight: "600",
+    },
+    meta: {
+      fontSize: "12px",
+      color: "#8b949e",
+    },
+    sectionHeading: {
+      color: "#f0f6fc",
+      marginTop: 0,
+    },
+    aiHeading: {
+      color: "#79c0ff",
+      marginTop: 0,
+    },
+    emptyText: {
+      color: "#8b949e",
+    },
+  };
+ 
+ 
 
   useEffect(() => {
     fetchIssues();
@@ -117,7 +185,7 @@ function App() {
 
   return (
   <div style={styles.container}>
-    <h1 style={styles.title}>🐞 AI Bug Tracker</h1>
+    <h1 style={styles.title}>AI Bug Tracker</h1>
 
     <div style={styles.card}>
       <input
@@ -147,7 +215,7 @@ function App() {
 
     {aiResult && (
       <div style={styles.card}>
-        <h3>🤖 AI Output</h3>
+        <h3>AI Output</h3>
         <pre style={styles.pre}>
           {JSON.stringify(aiResult, null, 2)}
         </pre>
@@ -155,18 +223,26 @@ function App() {
     )}
 
     <div style={styles.card}>
-      <h2>📋 Issues</h2>
+      <h2>Issues</h2>
 
       {issues.length === 0 && <p>No issues yet</p>}
 
       {issues.map((i) => (
         <div key={i.id} style={styles.issueItem}>
           <div>
-            <strong>{i.title}</strong>
+            <div>
+              <strong>{i.title}</strong>
+            </div>
+            <div style={styles.meta}>
+              {i.status} • {i.severity}
+            </div>
           </div>
-          <div style={styles.meta}>
-            {i.status} • {i.severity}
-          </div>
+            <button
+              style={styles.deleteBtn}
+              onClick={() => deleteIssue(i.id)}
+            >
+              Delete
+            </button>
         </div>
       ))}
     </div>
