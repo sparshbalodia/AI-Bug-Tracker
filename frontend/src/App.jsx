@@ -7,6 +7,9 @@ function App() {
   const [description, setDescription] = useState("");
   const [aiResult, setAiResult] = useState(null);
 
+  const [status, setStatus] = useState("open");
+  const [severity, setSeverity] = useState("low");
+
   // fetch issues
   const fetchIssues = async () => {
     const res = await API.get("/issues");
@@ -162,25 +165,34 @@ function App() {
     await API.post("/issues", {
       title,
       description,
-      status: "open",
-      severity: "low",
+      status,
+      severity,
     });
 
     setTitle("");
     setDescription("");
+    setStatus("open");
+    setSeverity("low");
     fetchIssues();
   };
 
   // AI enhance
   const enhanceAI = async () => {
-    if (!title) return;
+    try{
+      if (!title) return;
 
-    const res = await API.post("/issues/ai-enhance", {
-      title,
-      description,
-    });
+      const res = await API.post("/issues/ai-enhance", {
+        title,
+        description,
+      });
 
-    setAiResult(res.data);
+      setAiResult(res.data);
+      if(res.data?.severity){
+        setSeverity(res.data.severity);
+      }
+    } catch (err) {
+      console.error("AI Enhancement failed:", err);
+    }
   };
 
   return (
@@ -201,6 +213,25 @@ function App() {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
+
+      <select
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
+        style={styles.input}
+      >
+        <option value="open">Open</option>
+        <option value="closed">Closed</option>
+      </select>
+
+      <select
+        value={severity}
+        onChange={(e) => setSeverity(e.target.value)}
+        style={styles.input}
+      >
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
 
       <div style={styles.buttonRow}>
         <button style={styles.primaryBtn} onClick={createIssue}>
