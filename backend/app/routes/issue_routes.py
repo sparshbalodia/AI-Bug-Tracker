@@ -36,6 +36,7 @@ def get_all():
         {
             "id": i.id,
             "title": i.title,
+            "description": i.description,
             "status": i.status,
             "severity": i.severity
         } for i in issues
