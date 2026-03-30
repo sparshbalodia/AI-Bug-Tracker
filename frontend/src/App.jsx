@@ -10,6 +10,8 @@ function App() {
   const [status, setStatus] = useState("open");
   const [severity, setSeverity] = useState("low");
 
+  const[expandedId, setExpandeId] = useState(null);
+
   // fetch issues
   const fetchIssues = async () => {
     const res = await API.get("/issues");
@@ -134,6 +136,7 @@ function App() {
     issueTitle: {
       color: "#f0f6fc",
       fontWeight: "600",
+      cursor: "pointer",
     },
     meta: {
       fontSize: "12px",
@@ -261,9 +264,12 @@ function App() {
       {issues.map((i) => (
         <div key={i.id} style={styles.issueItem}>
           <div>
-            <div>
-              <strong>{i.title}</strong>
+            <div onClick={()=> setExpandeId(expandedId === i.id ? null : i.id)}>
+              <strong style={styles.issueTitle}>{i.title}</strong>
             </div>
+            {expandedId === i.id && (
+              <div style={styles.description}>{i.description}</div>
+            )}
             <div style={styles.meta}>
               {i.status} • {i.severity}
             </div>
