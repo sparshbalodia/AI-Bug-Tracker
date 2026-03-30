@@ -85,25 +85,16 @@ def delete(id):
 @issue_bp.route("/issues/ai-enhance", methods=["POST"])
 def ai_enhance():
     data = request.json or {}
-
     title = data.get("title")
     description = data.get("description")
 
     if not title:
         return jsonify({"error": "title required"}), 400
 
-    raw_output = enhance_issue(title, description)
+    result = enhance_issue(title, description)
 
-    try:
-        parsed = json.loads(raw_output)
-    except Exception:
-        return jsonify({
-          "error": "Invalid AI response",
-          "raw": raw_output
-          }), 500
-
-    errors = ai_schema.validate(parsed)
+    errors = ai_schema.validate(result)
     if errors:
         return jsonify({"error": "AI output invalid", "details": errors}), 500
 
-    return jsonify(parsed)
+    return jsonify(result)
